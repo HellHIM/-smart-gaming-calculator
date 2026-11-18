@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER-CALC // Gaming Edition</title>
+    <style>
+        @import url('https://googleapis.com');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #131524 0%, #07080f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .gaming-container {
+            display: flex;
+            gap: 20px;
+            background: rgba(18, 22, 38, 0.9);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid #00f3ff;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.3), inset 0 0 15px rgba(0, 243, 255, 0.1);
+            max-width: 750px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .calc-main {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #00f3ff;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+            letter-spacing: 1px;
+        }
+
+        .mode-badge {
+            background: #ff0055;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.6);
+        }
+
+        .display-screen {
+            background: #090b14;
+            border: 1px solid #2a3254;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .prev-operand {
+            color: #7a85ad;
+            font-size: 1.1rem;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+
+        .curr-operand {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff88;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            word-wrap: break-word;
+            margin-top: 5px;
+        }
+
+        .smart-tools {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tool-btn {
+            background: rgba(188, 19, 254, 0.15);
+            border: 1px solid #bc13fe;
+            color: #e299ff;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tool-btn:hover {
+            background: #bc13fe;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.7);
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button.key {
+            background: #181d33;
+            border: 1px solid #2d365c;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            padding: 16px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 4px 0 #0d101d;
+        }
+
+        button.key:hover {
+            border-color: #00f3ff;
+            background: #1f2642;
+            box-shadow: 0 4px 0 #0d101d, 0 0 12px rgba(0, 243, 255, 0.4);
+        }
+
+        button.key:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0d101d;
+        }
+
+        button.op {
+            color: #00f3ff;
+            background: #131c31;
+        }
+
+        button.clear {
+            color: #ff0055;
+            border-color: rgba(255, 0, 85, 0.4);
+        }
+
+        button.clear:hover {
+            border-color: #ff0055;
+            box-shadow: 0 4px 0 #0d101d, 0 0 12px rgba(255, 0, 85, 0.5);
+        }
+
+        button.equals {
+            background: linear-gradient(45deg, #00f3ff, #00ff88);
+            color: #07080f;
+            font-weight: 900;
+            border: none;
+            box-shadow: 0 4px 0 #008a4b;
+        }
+
+        button.equals:hover {
+            box-shadow: 0 4px 0 #008a4b, 0 0 20px rgba(0, 255, 136, 0.7);
+        }
+
+        .history-panel {
+            width: 240px;
+            background: #0d101d;
+            border: 1px solid #262e4d;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #262e4d;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            color: #00f3ff;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .clear-hist {
+            background: transparent;
+            border: none;
+            color: #ff0055;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-item {
+            background: #14192b;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border-left: 3px solid #00ff88;
+            font-size: 0.95rem;
+        }
+
+        .history-item span {
+            display: block;
+            color: #7a85ad;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 650px) {
+            .history-panel {
+                width: 100%;
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="gaming-container">
+    <div class="calc-main">
+        <div class="header">
+            <div class="title">⚡ CYBER-CALC v1.0</div>
+            <div class="mode-badge">PRO GAMING</div>
+        </div>
+
+        <div class="display-screen">
+            <div class="prev-operand" id="prev"></div>
+            <div class="curr-operand" id="curr">0</div>
+        </div>
+
+        <!-- Smart Extra Features for Play Store Value -->
+        <div class="smart-tools">
+            <button class="tool-btn" onclick="applyGST(18)">+18% GST</button>
+            <button class="tool-btn" onclick="applyDiscount(10)">-10% OFF</button>
+            <button class="tool-btn" onclick="calculateSquare()">X² POWER</button>
+        </div>
+
+        <div class="keypad">
+            <button class="key clear" onclick="clearAll()">AC</button>
+            <button class="key clear" onclick="deleteLast()">DEL</button>
+            <button class="key op" onclick="appendOp('%')">%</button>
+            <button class="key op" onclick="appendOp('/')">÷</button>
+
+            <button class="key" onclick="appendNum('7')">7</button>
+            <button class="key" onclick="appendNum('8')">8</button>
+            <button class="key" onclick="appendNum('9')">9</button>
+            <button class="key op" onclick="appendOp('*')">×</button>
+
+            <button class="key" onclick="appendNum('4')">4</button>
+            <button class="key" onclick="appendNum('5')">5</button>
+            <button class="key" onclick="appendNum('6')">6</button>
+            <button class="key op" onclick="appendOp('-')">−</button>
+
+            <button class="key" onclick="appendNum('1')">1</button>
+            <button class="key" onclick="appendNum('2')">2</button>
+            <button class="key" onclick="appendNum('3')">3</button>
+            <button class="key op" onclick="appendOp('+')">+</button>
+
+            <button class="key" onclick="appendNum('00')">00</button>
+            <button class="key" onclick="appendNum('0')">0</button>
+            <button class="key" onclick="appendNum('.')">.</button>
+            <button class="key equals" onclick="compute()">=</button>
+        </div>
+    </div>
+
+    <div class="history-panel">
+        <div class="history-header">
+            <span>BATTLE LOG (HISTORY)</span>
+            <button class="clear-hist" onclick="clearHistory()">CLEAR</button>
+        </div>
+        <div class="history-list" id="historyList">
+            <div style="color: #555f85; font-size: 0.9rem; text-align: center; margin-top: 20px;">
+                कोई हिसाब नहीं है...
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentInput = '0';
+    let previousInput = '';
+    let operation = undefined;
+    let historyData = [];
+
+    const currDisplay = document.getElementById('curr');
+    const prevDisplay = document.getElementById('prev');
+    const historyList = document.getElementById('historyList');
+
+    // Gaming Click Sound using Web Audio API (No external file needed)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playClickSound(freq = 600) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.06);
+    }
+
+    function updateDisplay() {
+        currDisplay.innerText = currentInput;
+        if (operation != null) {
+            prevDisplay.innerText = `${previousInput} ${operation}`;
+        } else {
+            prevDisplay.innerText = '';
+        }
+    }
+
+    function appendNum(num) {
+        playClickSound(650);
+        if (num === '.' && currentInput.includes('.')) return;
+        if (currentInput === '0' && num !== '.') {
+            currentInput = num;
+        } else {
+            currentInput += num;
+        }
+        updateDisplay();
+    }
+
+    function appendOp(op) {
+        playClickSound(500);
+        if (currentInput === '') return;
+        if (previousInput !== '') {
+            compute();
+        }
+        operation = op;
+        previousInput = currentInput;
+        currentInput = '';
+        updateDisplay();
+    }
+
+    function compute() {
+        playClickSound(850);
+        let computation;
+        const prev = parseFloat(previousInput);
+        const curr = parseFloat(currentInput);
+        if (isNaN(prev) || isNaN(curr)) return;
+
+        switch (operation) {
+            case '+': computation = prev + curr; break;
+            case '-': computation = prev - curr; break;
+            case '*': computation = prev * curr; break;
+            case '/': computation = curr === 0 ? 'ERROR' : prev / curr; break;
+            case '%': computation = (prev * curr) / 100; break;
+            default: return;
+        }
+
+        const finalResult = computation === 'ERROR' ? 'ERROR' : Math.round(computation * 10000) / 10000;
+        addToHistory(`${prev} ${operation} ${curr}`, finalResult);
+        currentInput = finalResult.toString();
+        operation = undefined;
+        previousInput = '';
+        updateDisplay();
+    }
+
+    function applyGST(rate) {
+        playClickSound(750);
+        const val = parseFloat(currentInput);
+        if (isNaN(val) || val === 0) return;
+        const gstAmount = (val * rate) / 100;
+        const total = Math.round((val + gstAmount) * 100) / 100;
+        addToHistory(`${val} + ${rate}% GST`, total);
+        currentInput = total.toString();
+        updateDisplay();
+    }
+
+    function applyDiscount(rate) {
+        playClickSound(750);
+        const val = parseFloat(currentInput);
+        if (isNaN(val) || val === 0) return;
+        const discAmount = (val * rate) / 100;
+        const total = Math.round((val - discAmount) * 100) / 100;
+        addToHistory(`${val} - ${rate}% OFF`, total);
+        currentInput = total.toString();
+        updateDisplay();
+    }
+
+    function calculateSquare() {
+        playClickSound(750);
+        const val = parseFloat(currentInput);
+        if (isNaN(val)) return;
+        const sq = Math.round((val * val) * 10000) / 10000;
+        addToHistory(`${val}²`, sq);
+        currentInput = sq.toString();
+        updateDisplay();
+    }
+
+    function clearAll() {
+        playClickSound(350);
+        currentInput = '0';
+        previousInput = '';
+        operation = undefined;
+        updateDisplay();
+    }
+
+    function deleteLast() {
+        playClickSound(400);
+        if (currentInput === 'ERROR') {
+            currentInput = '0';
+        } else {
+            currentInput = currentInput.toString().slice(0, -1);
+            if (currentInput === '') currentInput = '0';
+        }
+        updateDisplay();
+    }
+
+    function addToHistory(exp, res) {
+        historyData.unshift({ exp, res });
+        renderHistory();
+    }
+
+    function renderHistory() {
+        if (historyData.length === 0) {
+            historyList.innerHTML = `<div style="color: #555f85; font-size: 0.9rem; text-align: center; margin-top: 20px;">कोई हिसाब नहीं है...</div>`;
+            return;
+        }
+        historyList.innerHTML = historyData.map(item => `
+            <div class="history-item">
+                <span>${item.exp} =</span>
+                <strong>${item.res}</strong>
+            </div>
+        `).join('');
+    }
+
+    function clearHistory() {
+        playClickSound(300);
+        historyData = [];
+        renderHistory();
+    }
+</script>
+
+</body>
+</html>
